@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { CheckCircle2, Send, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, Send, ShieldCheck, KeyRound } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
 import Brand from '../components/Brand.jsx';
 import Loading from '../components/Loading.jsx';
@@ -89,6 +89,10 @@ export default function CheckinPage() {
   return (
     <div className="public-page">
       <div className="public-bg" />
+      <Link to="/admin/login" className="admin-mini-login" aria-label="Acessar login administrativo">
+        <KeyRound size={14} />
+        <span>Admin</span>
+      </Link>
       <main className="checkin-card">
         <Brand />
 

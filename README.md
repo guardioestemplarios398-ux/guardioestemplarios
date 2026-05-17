@@ -167,3 +167,15 @@ https://seu-site.netlify.app/checkin/checkin-diario-templo
 ```
 
 No painel `/admin/qrcode`, o sistema gera e baixa o QR Code automaticamente.
+
+
+## Botão discreto de administrador
+
+A tela pública de check-in possui um botão pequeno no canto inferior direito com o texto `Admin`.
+Ele direciona para:
+
+```txt
+/admin/login
+```
+
+Esse botão é discreto para não atrapalhar o check-in público, mas permite acesso rápido ao painel administrativo.

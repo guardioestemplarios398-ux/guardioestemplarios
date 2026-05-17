@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { CheckCircle2, Home } from 'lucide-react';
+import {CheckCircle2, Home, KeyRound} from 'lucide-react';
 import Brand from '../components/Brand.jsx';
 
 export default function SuccessPage() {
@@ -10,6 +10,7 @@ export default function SuccessPage() {
   return (
     <div className="public-page success-page">
       <div className="public-bg" />
+      <Link to="/admin/login" className="admin-mini-login" aria-label="Acessar login administrativo"><KeyRound size={14} /><span>Admin</span></Link>
       <main className="checkin-card success-card">
         <Brand />
         <div className="success-icon"><CheckCircle2 size={58} /></div>
