@@ -1,13 +1,23 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { BarChart3, CalendarDays, LogOut, QrCode, Table2, UserCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
+import { clearAdminSession, getAdminToken, getAdminUser } from '../lib/localAuth.js';
 import Brand from './Brand.jsx';
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const adminUser = getAdminUser();
 
   async function logout() {
-    await supabase.auth.signOut();
+    const token = getAdminToken();
+
+    if (token) {
+      await supabase.rpc('local_admin_logout', {
+        p_token: token,
+      });
+    }
+
+    clearAdminSession();
     navigate('/admin/login', { replace: true });
   }
 
@@ -22,7 +32,7 @@ export default function AdminLayout() {
           <NavLink to="/admin/qrcode"><QrCode size={18} /> QR Code</NavLink>
         </nav>
         <button className="ghost-btn sidebar-user" onClick={logout}>
-          <UserCircle size={18} /> Admin <LogOut size={16} />
+          <UserCircle size={18} /> {adminUser?.display_name || 'Admin'} <LogOut size={16} />
         </button>
       </aside>
       <main className="admin-main">

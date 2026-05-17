@@ -26,7 +26,7 @@ export function exportCheckinsCsv(rows, filename = 'checkins.csv') {
     row.is_guardioes ? 'Sim' : 'Não',
     row.other_institution,
     row.notes,
-    row.events?.name || '',
+    row.event_name || row.events?.name || '',
     formatDateTime(row.created_at),
   ].map((field) => `"${clean(field)}"`).join(';'));
 

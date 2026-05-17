@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase.js';
+import { clearAdminSession, getAdminToken, saveAdminSession } from '../lib/localAuth.js';
 import Loading from '../components/Loading.jsx';
 
 export default function AdminGuard({ children }) {
@@ -8,19 +9,25 @@ export default function AdminGuard({ children }) {
 
   useEffect(() => {
     async function verify() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) {
+      const token = getAdminToken();
+
+      if (!token) {
         setState({ loading: false, allowed: false });
         return;
       }
 
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('id')
-        .eq('active', true)
-        .limit(1);
+      const { data, error } = await supabase.rpc('local_admin_validate', {
+        p_token: token,
+      });
 
-      setState({ loading: false, allowed: !error && Boolean(data?.length) });
+      if (error || !data?.length) {
+        clearAdminSession();
+        setState({ loading: false, allowed: false });
+        return;
+      }
+
+      saveAdminSession({ token, ...data[0] });
+      setState({ loading: false, allowed: true });
     }
 
     verify();

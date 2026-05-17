@@ -179,3 +179,32 @@ Ele direciona para:
 ```
 
 Esse botão é discreto para não atrapalhar o check-in público, mas permite acesso rápido ao painel administrativo.
+
+
+## Login administrativo local
+
+Esta versão não usa mais Supabase Auth para o painel administrativo.
+
+Os usuários administrativos ficam na tabela:
+
+```txt
+app_admin_users
+```
+
+Logins criados no SQL:
+
+```txt
+Usuário: douglas francisco
+Senha: 123456
+
+Usuário: cristian valente
+Senha: 123456
+```
+
+Execute no Supabase o arquivo:
+
+```txt
+supabase/local-admin-login.sql
+```
+
+Depois publique novamente no Netlify.

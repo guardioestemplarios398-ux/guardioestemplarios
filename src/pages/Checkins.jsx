@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Download, Search } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
+import { getAdminToken } from '../lib/localAuth.js';
 import PeriodFilter from '../components/PeriodFilter.jsx';
 import { formatDateTime, getDateRange, toSupabaseDate } from '../lib/dateFilters.js';
 import { exportCheckinsCsv } from '../lib/exportCsv.js';
@@ -19,12 +20,11 @@ export default function Checkins() {
     async function load() {
       if (filter === 'custom' && (!customStart || !customEnd)) return;
       setLoading(true);
-      const { data, error } = await supabase
-        .from('checkins')
-        .select('*, events(name, slug)')
-        .gte('created_at', toSupabaseDate(range.start))
-        .lte('created_at', toSupabaseDate(range.end))
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.rpc('admin_list_checkins', {
+        p_token: getAdminToken(),
+        p_start: toSupabaseDate(range.start),
+        p_end: toSupabaseDate(range.end),
+      });
 
       if (error) console.error(error);
       setRows(data || []);
@@ -37,7 +37,7 @@ export default function Checkins() {
     return rows.filter((row) => {
       if (type === 'guardioes' && !row.is_guardioes) return false;
       if (type === 'visitantes' && row.is_guardioes) return false;
-      const haystack = [row.full_name, row.phone, row.email, row.city, row.other_institution, row.events?.name]
+      const haystack = [row.full_name, row.phone, row.email, row.city, row.other_institution, row.event_name]
         .filter(Boolean)
         .join(' ')
         .toLowerCase();
@@ -107,7 +107,7 @@ export default function Checkins() {
                   <td>{row.city || '-'}</td>
                   <td><span className={row.is_guardioes ? 'tag gold' : 'tag'}>{row.is_guardioes ? 'Guardião' : 'Visitante'}</span></td>
                   <td>{row.is_guardioes ? '-' : row.other_institution}</td>
-                  <td>{row.events?.name || '-'}</td>
+                  <td>{row.event_name || '-'}</td>
                   <td>{formatDateTime(row.created_at)}</td>
                 </tr>
               ))}

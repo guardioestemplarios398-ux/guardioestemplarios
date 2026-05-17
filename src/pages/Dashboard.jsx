@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell, Legend } from 'recharts';
 import { CalendarCheck2, Crown, TrendingUp, Users } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
+import { getAdminToken } from '../lib/localAuth.js';
 import MetricCard from '../components/MetricCard.jsx';
 import PeriodFilter from '../components/PeriodFilter.jsx';
 import { formatDateTime, getDateRange, toSupabaseDate } from '../lib/dateFilters.js';
@@ -18,12 +19,11 @@ export default function Dashboard() {
     async function load() {
       if (filter === 'custom' && (!customStart || !customEnd)) return;
       setLoading(true);
-      const { data, error } = await supabase
-        .from('checkins')
-        .select('*, events(name, slug)')
-        .gte('created_at', toSupabaseDate(range.start))
-        .lte('created_at', toSupabaseDate(range.end))
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.rpc('admin_list_checkins', {
+        p_token: getAdminToken(),
+        p_start: toSupabaseDate(range.start),
+        p_end: toSupabaseDate(range.end),
+      });
 
       if (error) console.error(error);
       setRows(data || []);
@@ -156,7 +156,7 @@ export default function Dashboard() {
                   <td>{row.full_name}</td>
                   <td><span className={row.is_guardioes ? 'tag gold' : 'tag'}>{row.is_guardioes ? 'Guardião' : 'Visitante'}</span></td>
                   <td>{row.city || '-'}</td>
-                  <td>{row.events?.name || '-'}</td>
+                  <td>{row.event_name || '-'}</td>
                   <td>{formatDateTime(row.created_at)}</td>
                 </tr>
               ))}

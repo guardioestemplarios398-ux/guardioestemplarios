@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CalendarPlus, Link as LinkIcon, Save } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
+import { getAdminToken } from '../lib/localAuth.js';
 import { formatDateOnly } from '../lib/dateFilters.js';
 
 function slugify(value) {
@@ -30,10 +31,9 @@ export default function Events() {
   const [message, setMessage] = useState('');
 
   async function loadEvents() {
-    const { data, error } = await supabase
-      .from('events')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const { data, error } = await supabase.rpc('admin_list_events', {
+      p_token: getAdminToken(),
+    });
     if (error) console.error(error);
     setEvents(data || []);
   }
@@ -57,10 +57,19 @@ export default function Events() {
       slug: slugify(form.slug || form.name),
       event_date: form.event_date || null,
     };
-    const { error } = await supabase.from('events').insert(payload);
+    const { error } = await supabase.rpc('admin_create_event', {
+      p_token: getAdminToken(),
+      p_name: payload.name,
+      p_slug: payload.slug,
+      p_description: payload.description || null,
+      p_location: payload.location || null,
+      p_event_date: payload.event_date || null,
+      p_active: payload.active,
+    });
     setLoading(false);
     if (error) {
-      setMessage('Erro ao criar evento. Verifique se o slug já existe.');
+      console.error(error);
+      setMessage('Erro ao criar evento. Verifique se o slug já existe ou se sua sessão expirou.');
       return;
     }
     setForm(blankEvent);
@@ -69,7 +78,11 @@ export default function Events() {
   }
 
   async function toggleActive(event) {
-    await supabase.from('events').update({ active: !event.active }).eq('id', event.id);
+    await supabase.rpc('admin_set_event_active', {
+      p_token: getAdminToken(),
+      p_event_id: event.id,
+      p_active: !event.active,
+    });
     loadEvents();
   }
 

@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LockKeyhole, LogIn } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
+import { saveAdminSession } from '../lib/localAuth.js';
 import Brand from '../components/Brand.jsx';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('douglasnoticias@gmail.com');
+  const [login, setLogin] = useState('douglas francisco');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -16,27 +17,20 @@ export default function AdminLogin() {
     setLoading(true);
     setError('');
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setLoading(false);
-      setError('Login inválido. Verifique e-mail, senha e usuário no Supabase Auth.');
-      return;
-    }
-
-    const { data: adminRows, error: adminError } = await supabase
-      .from('admin_users')
-      .select('id, active, role')
-      .eq('active', true)
-      .limit(1);
+    const { data, error } = await supabase.rpc('local_admin_login', {
+      p_login: login,
+      p_password: password,
+    });
 
     setLoading(false);
 
-    if (adminError || !adminRows?.length) {
-      await supabase.auth.signOut();
-      setError('Usuário autenticado, mas sem permissão administrativa. Verifique a tabela admin_users.');
+    if (error || !data?.length) {
+      console.error(error);
+      setError('Login inválido. Verifique nome de usuário e senha.');
       return;
     }
 
+    saveAdminSession(data[0]);
     navigate('/admin/dashboard', { replace: true });
   }
 
@@ -54,12 +48,25 @@ export default function AdminLogin() {
         </div>
         <form onSubmit={handleLogin} className="login-form">
           <label>
-            E-mail
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            Nome de usuário
+            <input
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+              required
+              placeholder="Ex.: douglas francisco"
+              autoComplete="username"
+            />
           </label>
           <label>
             Senha
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Digite sua senha" />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Digite sua senha"
+              autoComplete="current-password"
+            />
           </label>
           {error && <div className="alert error">{error}</div>}
           <button className="primary-btn full" type="submit" disabled={loading}>
