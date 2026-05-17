@@ -1,0 +1,204 @@
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { CheckCircle2, Send, ShieldCheck } from 'lucide-react';
+import { supabase } from '../lib/supabase.js';
+import Brand from '../components/Brand.jsx';
+import Loading from '../components/Loading.jsx';
+
+const initialForm = {
+  full_name: '',
+  phone: '',
+  email: '',
+  city: '',
+  is_guardioes: true,
+  other_institution: '',
+  notes: '',
+};
+
+export default function CheckinPage() {
+  const { slug = 'checkin-diario-templo' } = useParams();
+  const navigate = useNavigate();
+  const [event, setEvent] = useState(null);
+  const [form, setForm] = useState(initialForm);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    async function loadEvent() {
+      setLoading(true);
+      setError('');
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('slug', slug)
+        .eq('active', true)
+        .maybeSingle();
+
+      if (error) setError('Não foi possível carregar o evento. Verifique o Supabase e as permissões RLS.');
+      else if (!data) setError('Evento não encontrado ou inativo.');
+      else setEvent(data);
+      setLoading(false);
+    }
+
+    loadEvent();
+  }, [slug]);
+
+  const canSubmit = useMemo(() => {
+    if (!form.full_name.trim() || form.full_name.trim().length < 3) return false;
+    if (!form.is_guardioes && !form.other_institution.trim()) return false;
+    return true;
+  }, [form]);
+
+  function updateField(field, value) {
+    setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!canSubmit || !event) return;
+
+    setSaving(true);
+    setError('');
+
+    const payload = {
+      event_id: event.id,
+      full_name: form.full_name.trim(),
+      phone: form.phone.trim() || null,
+      email: form.email.trim() || null,
+      city: form.city.trim() || null,
+      is_guardioes: Boolean(form.is_guardioes),
+      other_institution: form.is_guardioes ? null : form.other_institution.trim(),
+      notes: form.notes.trim() || null,
+    };
+
+    const { error } = await supabase.from('checkins').insert(payload);
+
+    setSaving(false);
+    if (error) {
+      console.error(error);
+      setError('Não foi possível confirmar o check-in. Verifique se os campos obrigatórios foram preenchidos.');
+      return;
+    }
+
+    navigate('/success', { state: { name: payload.full_name, eventName: event.name } });
+  }
+
+  if (loading) return <Loading message="Carregando check-in..." />;
+
+  return (
+    <div className="public-page">
+      <div className="public-bg" />
+      <main className="checkin-card">
+        <Brand />
+
+        {error && !event ? (
+          <div className="empty-state">
+            <ShieldCheck size={44} />
+            <h1>Check-in indisponível</h1>
+            <p>{error}</p>
+            <Link to="/admin/login" className="secondary-link">Acessar painel administrativo</Link>
+          </div>
+        ) : (
+          <>
+            <div className="event-header">
+              <span>Evento ativo</span>
+              <h1>{event?.name}</h1>
+              <p>{event?.description || 'Preencha seus dados para confirmar sua presença.'}</p>
+            </div>
+
+            <form className="checkin-form" onSubmit={handleSubmit}>
+              <label>
+                Nome completo <b>*</b>
+                <input
+                  placeholder="Digite seu nome completo"
+                  value={form.full_name}
+                  onChange={(e) => updateField('full_name', e.target.value)}
+                  required
+                />
+              </label>
+
+              <div className="form-grid">
+                <label>
+                  WhatsApp / Telefone
+                  <input
+                    placeholder="(00) 00000-0000"
+                    value={form.phone}
+                    onChange={(e) => updateField('phone', e.target.value)}
+                  />
+                </label>
+                <label>
+                  E-mail
+                  <input
+                    type="email"
+                    placeholder="seuemail@exemplo.com"
+                    value={form.email}
+                    onChange={(e) => updateField('email', e.target.value)}
+                  />
+                </label>
+              </div>
+
+              <label>
+                Cidade
+                <input
+                  placeholder="Informe sua cidade"
+                  value={form.city}
+                  onChange={(e) => updateField('city', e.target.value)}
+                />
+              </label>
+
+              <div className="choice-box">
+                <span>Você é dos Guardiões Templários?</span>
+                <div className="choice-actions">
+                  <button
+                    type="button"
+                    className={form.is_guardioes ? 'selected' : ''}
+                    onClick={() => updateField('is_guardioes', true)}
+                  >
+                    Sim
+                  </button>
+                  <button
+                    type="button"
+                    className={!form.is_guardioes ? 'selected' : ''}
+                    onClick={() => updateField('is_guardioes', false)}
+                  >
+                    Não
+                  </button>
+                </div>
+              </div>
+
+              {!form.is_guardioes && (
+                <label className="fade-in">
+                  Qual instituição, grupo ou templo você representa? <b>*</b>
+                  <input
+                    placeholder="Ex.: Visitante, grupo, igreja ou instituição"
+                    value={form.other_institution}
+                    onChange={(e) => updateField('other_institution', e.target.value)}
+                    required={!form.is_guardioes}
+                  />
+                </label>
+              )}
+
+              <label>
+                Observação
+                <textarea
+                  placeholder="Opcional"
+                  value={form.notes}
+                  onChange={(e) => updateField('notes', e.target.value)}
+                  rows="3"
+                />
+              </label>
+
+              {error && <div className="alert error">{error}</div>}
+
+              <button className="primary-btn full" type="submit" disabled={!canSubmit || saving}>
+                {saving ? 'Confirmando...' : 'Confirmar check-in'}
+                {saving ? null : <Send size={18} />}
+              </button>
+            </form>
+          </>
+        )}
+      </main>
+    </div>
+  );
+}
