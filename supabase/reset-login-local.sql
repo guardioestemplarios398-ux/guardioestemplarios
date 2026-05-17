@@ -1,13 +1,23 @@
 -- =====================================================
 -- GUARDIÕES TEMPLÁRIOS CHECK-IN
--- LOGIN LOCAL COMPLETO + RESET DE USUÁRIOS
+-- CORREÇÃO FINAL DO LOGIN LOCAL
+--
+-- Corrige erro:
+--   function crypt(text, text) does not exist
+--
+-- Motivo:
+--   No Supabase, a extensão pgcrypto pode ficar no schema "extensions".
+--   As funções precisam usar search_path = public, extensions.
 --
 -- Logins:
 --   douglas francisco  / 123456
 --   cristian valente   / 123456
 -- =====================================================
 
-create extension if not exists "pgcrypto";
+create schema if not exists extensions;
+create extension if not exists "pgcrypto" with schema extensions;
+
+set search_path = public, extensions;
 
 -- =====================================================
 -- 1. TABELAS DO SISTEMA
@@ -87,7 +97,7 @@ set
   active = true;
 
 -- =====================================================
--- 3. LIMPAR SESSÕES ANTIGAS E RESETAR LOGINS
+-- 3. LIMPAR SESSÕES ANTIGAS E RESETAR USUÁRIOS
 -- =====================================================
 
 delete from public.app_admin_sessions;
@@ -130,7 +140,7 @@ set
   updated_at = now();
 
 -- =====================================================
--- 4. RECRIAR FUNÇÕES DE LOGIN
+-- 4. RECRIAR FUNÇÕES
 -- =====================================================
 
 drop function if exists public.local_admin_login(text, text);
@@ -155,7 +165,7 @@ returns table (
 )
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_login_key text;
@@ -212,7 +222,7 @@ create or replace function public.require_local_admin(
 returns uuid
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   v_user_id uuid;
@@ -252,7 +262,7 @@ returns table (
 )
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   perform public.require_local_admin(p_token);
@@ -278,7 +288,7 @@ create or replace function public.local_admin_logout(
 returns boolean
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   update public.app_admin_sessions
@@ -310,7 +320,7 @@ returns table (
 )
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   perform public.require_local_admin(p_token);
@@ -352,7 +362,7 @@ returns table (
 )
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   perform public.require_local_admin(p_token);
@@ -393,7 +403,7 @@ returns table (
 )
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   perform public.require_local_admin(p_token);
@@ -435,7 +445,7 @@ create or replace function public.admin_set_event_active(
 returns boolean
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   perform public.require_local_admin(p_token);
@@ -495,7 +505,7 @@ create index if not exists idx_app_admin_sessions_token_hash on public.app_admin
 create index if not exists idx_app_admin_sessions_expires_at on public.app_admin_sessions(expires_at);
 
 -- =====================================================
--- 6. TESTES: ESTES DOIS SELECTS PRECISAM RETORNAR DADOS
+-- 6. TESTES FINAIS
 -- =====================================================
 
 select

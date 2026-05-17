@@ -233,3 +233,21 @@ No final do SQL, o teste abaixo precisa retornar uma linha:
 select display_name, role, expires_at
 from public.local_admin_login('douglas francisco', '123456');
 ```
+
+
+## Correção do erro `function crypt(text, text) does not exist`
+
+Execute no Supabase:
+
+```txt
+supabase/correcao-crypt-login.sql
+```
+
+Essa correção ajusta as funções para usar `search_path = public, extensions`, porque no Supabase a extensão `pgcrypto` costuma ficar no schema `extensions`.
+
+Depois teste no painel:
+
+```txt
+douglas francisco / 123456
+cristian valente / 123456
+```
