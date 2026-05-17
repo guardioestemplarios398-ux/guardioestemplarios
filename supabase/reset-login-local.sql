@@ -146,6 +146,7 @@ set
 drop function if exists public.local_admin_login(text, text);
 drop function if exists public.local_admin_validate(text);
 drop function if exists public.local_admin_logout(text);
+drop function if exists public.local_admin_change_password(text, text, text);
 drop function if exists public.admin_list_checkins(text, timestamptz, timestamptz);
 drop function if exists public.admin_list_events(text);
 drop function if exists public.admin_create_event(text, text, text, text, text, date, boolean);
@@ -294,6 +295,57 @@ begin
   update public.app_admin_sessions
   set expires_at = now()
   where token_hash = encode(digest(coalesce(p_token, ''), 'sha256'), 'hex');
+
+  return true;
+end;
+$$;
+
+
+create or replace function public.local_admin_change_password(
+  p_token text,
+  p_current_password text,
+  p_new_password text
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+declare
+  v_user_id uuid;
+  v_user public.app_admin_users%rowtype;
+begin
+  if length(coalesce(p_new_password, '')) < 6 then
+    raise exception 'A nova senha precisa ter pelo menos 6 caracteres';
+  end if;
+
+  v_user_id := public.require_local_admin(p_token);
+
+  select *
+  into v_user
+  from public.app_admin_users
+  where id = v_user_id
+    and active = true
+  limit 1;
+
+  if v_user.id is null then
+    return false;
+  end if;
+
+  if v_user.password_hash <> crypt(coalesce(p_current_password, ''), v_user.password_hash) then
+    return false;
+  end if;
+
+  update public.app_admin_users
+  set
+    password_hash = crypt(p_new_password, gen_salt('bf')),
+    updated_at = now()
+  where id = v_user.id;
+
+  update public.app_admin_sessions
+  set expires_at = now()
+  where user_id = v_user.id
+    and token_hash <> encode(digest(coalesce(p_token, ''), 'sha256'), 'hex');
 
   return true;
 end;
@@ -490,6 +542,7 @@ grant insert on public.checkins to anon, authenticated;
 grant execute on function public.local_admin_login(text, text) to anon, authenticated;
 grant execute on function public.local_admin_validate(text) to anon, authenticated;
 grant execute on function public.local_admin_logout(text) to anon, authenticated;
+grant execute on function public.local_admin_change_password(text, text, text) to anon, authenticated;
 grant execute on function public.require_local_admin(text) to anon, authenticated;
 grant execute on function public.admin_list_checkins(text, timestamptz, timestamptz) to anon, authenticated;
 grant execute on function public.admin_list_events(text) to anon, authenticated;

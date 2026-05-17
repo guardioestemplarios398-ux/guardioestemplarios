@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { BarChart3, CalendarDays, LogOut, QrCode, Table2, UserCircle } from 'lucide-react';
+import { BarChart3, CalendarDays, KeyRound, LogOut, QrCode, Table2, UserCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
 import { clearAdminSession, getAdminToken, getAdminUser } from '../lib/localAuth.js';
 import Brand from './Brand.jsx';
@@ -30,6 +30,7 @@ export default function AdminLayout() {
           <NavLink to="/admin/checkins"><Table2 size={18} /> Check-ins</NavLink>
           <NavLink to="/admin/events"><CalendarDays size={18} /> Eventos</NavLink>
           <NavLink to="/admin/qrcode"><QrCode size={18} /> QR Code</NavLink>
+          <NavLink to="/admin/alterar-senha"><KeyRound size={18} /> Alterar senha</NavLink>
         </nav>
         <button className="ghost-btn sidebar-user" onClick={logout}>
           <UserCircle size={18} /> {adminUser?.display_name || 'Admin'} <LogOut size={16} />

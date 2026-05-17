@@ -90,7 +90,7 @@ export default function AdminLogin() {
           </label>
 
           <div className="login-help">
-            Usuários: <strong>douglas francisco</strong> ou <strong>cristian valente</strong> · Senha: <strong>123456</strong>
+            Digite seu usuário e senha cadastrados para acessar o painel.
           </div>
 
           {error && <div className="alert error">{error}</div>}

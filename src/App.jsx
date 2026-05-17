@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import Checkins from './pages/Checkins.jsx';
 import Events from './pages/Events.jsx';
 import QrCodePage from './pages/QrCodePage.jsx';
+import ChangePassword from './pages/ChangePassword.jsx';
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="checkins" element={<Checkins />} />
         <Route path="events" element={<Events />} />
         <Route path="qrcode" element={<QrCodePage />} />
+        <Route path="alterar-senha" element={<ChangePassword />} />
       </Route>
       <Route path="*" element={<Navigate to="/checkin/checkin-diario-templo" replace />} />
     </Routes>

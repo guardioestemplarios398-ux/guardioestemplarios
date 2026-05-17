@@ -251,3 +251,28 @@ Depois teste no painel:
 douglas francisco / 123456
 cristian valente / 123456
 ```
+
+
+## Alteração de senha pelo painel
+
+O painel administrativo agora possui a rota:
+
+```txt
+/admin/alterar-senha
+```
+
+A opção também aparece no menu lateral como **Alterar senha**.
+
+Execute novamente o SQL:
+
+```txt
+supabase/correcao-crypt-login.sql
+```
+
+Ele cria a função:
+
+```txt
+local_admin_change_password
+```
+
+Depois suba o projeto e faça novo deploy no Netlify.
