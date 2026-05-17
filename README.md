@@ -208,3 +208,28 @@ supabase/local-admin-login.sql
 ```
 
 Depois publique novamente no Netlify.
+
+
+## Atualização: visualizar senha e reset de login local
+
+A tela de login agora possui botão para visualizar/ocultar senha.
+
+Execute novamente no Supabase:
+
+```txt
+supabase/local-admin-login.sql
+```
+
+Esse SQL recria os usuários locais e reseta as senhas:
+
+```txt
+douglas francisco / 123456
+cristian valente / 123456
+```
+
+No final do SQL, o teste abaixo precisa retornar uma linha:
+
+```sql
+select display_name, role, expires_at
+from public.local_admin_login('douglas francisco', '123456');
+```
