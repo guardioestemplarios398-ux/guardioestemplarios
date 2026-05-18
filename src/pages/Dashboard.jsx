@@ -67,7 +67,7 @@ export default function Dashboard() {
         <div>
           <span>Painel Administrativo</span>
           <h1>Dashboard de Presença</h1>
-          <p>Controle de quantas pessoas passaram pelo templo no período selecionado.</p>
+          <p>Controle de quantas pessoas passaram pela Loja no período selecionado.</p>
         </div>
       </header>
 
@@ -145,6 +145,8 @@ export default function Dashboard() {
               <tr>
                 <th>Nome</th>
                 <th>Tipo</th>
+                <th>CIM</th>
+                <th>Grau</th>
                 <th>Cidade</th>
                 <th>Evento</th>
                 <th>Data/Hora</th>
@@ -155,12 +157,14 @@ export default function Dashboard() {
                 <tr key={row.id}>
                   <td>{row.full_name}</td>
                   <td><span className={row.is_guardioes ? 'tag gold' : 'tag'}>{row.is_guardioes ? 'Guardião' : 'Visitante'}</span></td>
+                  <td>{row.cim || '-'}</td>
+                  <td>{row.grau || '-'}</td>
                   <td>{row.city || '-'}</td>
                   <td>{row.event_name || '-'}</td>
                   <td>{formatDateTime(row.created_at)}</td>
                 </tr>
               ))}
-              {!rows.length && <tr><td colSpan="5" className="empty-table">Nenhum check-in no período.</td></tr>}
+              {!rows.length && <tr><td colSpan="7" className="empty-table">Nenhum check-in no período.</td></tr>}
             </tbody>
           </table>
         </div>

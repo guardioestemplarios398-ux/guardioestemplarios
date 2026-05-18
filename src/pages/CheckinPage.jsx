@@ -7,8 +7,8 @@ import Loading from '../components/Loading.jsx';
 
 const initialForm = {
   full_name: '',
-  phone: '',
-  email: '',
+  cim: '',
+  grau: 'Aprendiz',
   city: '',
   is_guardioes: true,
   other_institution: '',
@@ -64,8 +64,8 @@ export default function CheckinPage() {
     const payload = {
       event_id: event.id,
       full_name: form.full_name.trim(),
-      phone: form.phone.trim() || null,
-      email: form.email.trim() || null,
+      cim: form.cim.trim() || null,
+      grau: form.grau || null,
       city: form.city.trim() || null,
       is_guardioes: Boolean(form.is_guardioes),
       other_institution: form.is_guardioes ? null : form.other_institution.trim(),
@@ -108,7 +108,7 @@ export default function CheckinPage() {
             <div className="event-header">
               <span>Evento ativo</span>
               <h1>{event?.name}</h1>
-              <p>{event?.description || 'Preencha seus dados para confirmar sua presença.'}</p>
+              <p>{event?.description || 'Preencha seus dados para confirmar sua presença na Loja.'}</p>
             </div>
 
             <form className="checkin-form" onSubmit={handleSubmit}>
@@ -124,21 +124,23 @@ export default function CheckinPage() {
 
               <div className="form-grid">
                 <label>
-                  WhatsApp / Telefone
+                  CIM
                   <input
-                    placeholder="(00) 00000-0000"
-                    value={form.phone}
-                    onChange={(e) => updateField('phone', e.target.value)}
+                    placeholder="Informe seu CIM"
+                    value={form.cim}
+                    onChange={(e) => updateField('cim', e.target.value)}
                   />
                 </label>
                 <label>
-                  E-mail
-                  <input
-                    type="email"
-                    placeholder="seuemail@exemplo.com"
-                    value={form.email}
-                    onChange={(e) => updateField('email', e.target.value)}
-                  />
+                  Grau
+                  <select
+                    value={form.grau}
+                    onChange={(e) => updateField('grau', e.target.value)}
+                  >
+                    <option value="Aprendiz">Aprendiz</option>
+                    <option value="Companheiro">Companheiro</option>
+                    <option value="Mestre">Mestre</option>
+                  </select>
                 </label>
               </div>
 

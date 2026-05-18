@@ -8,8 +8,8 @@ function clean(value) {
 export function exportCheckinsCsv(rows, filename = 'checkins.csv') {
   const headers = [
     'Nome completo',
-    'Telefone',
-    'E-mail',
+    'CIM',
+    'Grau',
     'Cidade',
     'Guardião Templário',
     'Instituição / Grupo',
@@ -20,8 +20,8 @@ export function exportCheckinsCsv(rows, filename = 'checkins.csv') {
 
   const lines = rows.map((row) => [
     row.full_name,
-    row.phone,
-    row.email,
+    row.cim,
+    row.grau,
     row.city,
     row.is_guardioes ? 'Sim' : 'Não',
     row.other_institution,

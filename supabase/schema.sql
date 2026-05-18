@@ -29,6 +29,8 @@ create table if not exists public.checkins (
   id uuid primary key default gen_random_uuid(),
   event_id uuid references public.events(id) on delete cascade,
   full_name text not null,
+  cim text,
+  grau text,
   phone text,
   email text,
   city text,
@@ -69,6 +71,8 @@ create index if not exists idx_events_slug on public.events(slug);
 create index if not exists idx_events_active on public.events(active);
 create index if not exists idx_checkins_event_id on public.checkins(event_id);
 create index if not exists idx_checkins_created_at on public.checkins(created_at desc);
+create index if not exists idx_checkins_cim on public.checkins(cim);
+create index if not exists idx_checkins_grau on public.checkins(grau);
 create index if not exists idx_checkins_is_guardioes on public.checkins(is_guardioes);
 create index if not exists idx_checkins_city on public.checkins(city);
 create index if not exists idx_admin_users_user_id on public.admin_users(user_id);
@@ -86,10 +90,10 @@ insert into public.events (
   active
 )
 values (
-  'Check-in Diário do Templo',
+  'Check-in Guardiões Templários 33 N° 4637',
   'checkin-diario-templo',
-  'Controle diário de presença no templo dos Guardiões Templários.',
-  'Templo Guardiões Templários',
+  'Controle de presença da Loja Guardiões Templários 33 N° 4637.',
+  'Guardiões Templários 33 N° 4637',
   current_date,
   true
 )

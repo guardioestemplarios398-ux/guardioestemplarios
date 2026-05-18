@@ -276,3 +276,65 @@ local_admin_change_password
 ```
 
 Depois suba o projeto e faça novo deploy no Netlify.
+
+
+## Logo Guardiões Templários
+
+A logo institucional foi incluída em:
+
+```txt
+public/logo-guardioes-templarios.png
+```
+
+Ela aparece na tela pública de check-in, login administrativo, menu lateral do painel, favicon e como marca d'água discreta no layout.
+
+
+## Correção do QR Code
+
+O QR Code agora usa automaticamente o domínio atual do Netlify:
+
+```txt
+window.location.origin
+```
+
+Assim ele não depende mais da variável `VITE_APP_PUBLIC_URL` para gerar o link do check-in.
+
+No painel, em **QR Code**, também foi adicionado o botão:
+
+```txt
+Abrir link de teste
+```
+
+Use esse botão para validar o link antes de imprimir ou compartilhar o QR.
+
+
+## Alteração dos campos do check-in
+
+O formulário público foi atualizado:
+
+```txt
+Saiu: WhatsApp / Telefone
+Entrou: CIM
+
+Saiu: E-mail
+Entrou: Grau
+Opções: Aprendiz, Companheiro, Mestre
+```
+
+Nome utilizado no sistema:
+
+```txt
+Guardiões Templários 33 N° 4637
+```
+
+Execute no Supabase:
+
+```txt
+supabase/correcao-crypt-login.sql
+```
+
+ou, para aplicar apenas as colunas novas:
+
+```txt
+supabase/migracao-cim-grau-loja.sql
+```

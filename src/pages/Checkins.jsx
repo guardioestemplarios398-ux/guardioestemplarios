@@ -37,7 +37,7 @@ export default function Checkins() {
     return rows.filter((row) => {
       if (type === 'guardioes' && !row.is_guardioes) return false;
       if (type === 'visitantes' && row.is_guardioes) return false;
-      const haystack = [row.full_name, row.phone, row.email, row.city, row.other_institution, row.event_name]
+      const haystack = [row.full_name, row.cim, row.grau, row.city, row.other_institution, row.event_name]
         .filter(Boolean)
         .join(' ')
         .toLowerCase();
@@ -51,7 +51,7 @@ export default function Checkins() {
         <div>
           <span>Registros</span>
           <h1>Check-ins realizados</h1>
-          <p>Consulte, filtre e exporte os dados de presença.</p>
+          <p>Consulte, filtre e exporte os dados de presença da Loja.</p>
         </div>
         <button className="primary-btn" onClick={() => exportCheckinsCsv(filtered, `checkins-guardioes-${new Date().toISOString().slice(0,10)}.csv`)}>
           <Download size={18} /> Exportar CSV
@@ -70,7 +70,7 @@ export default function Checkins() {
       <div className="filters-row">
         <div className="search-box">
           <Search size={18} />
-          <input placeholder="Buscar por nome, telefone, cidade ou instituição" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input placeholder="Buscar por nome, CIM, grau, cidade ou instituição" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <select value={type} onChange={(e) => setType(e.target.value)}>
           <option value="all">Todos</option>
@@ -89,8 +89,8 @@ export default function Checkins() {
             <thead>
               <tr>
                 <th>Nome</th>
-                <th>Telefone</th>
-                <th>E-mail</th>
+                <th>CIM</th>
+                <th>Grau</th>
                 <th>Cidade</th>
                 <th>Tipo</th>
                 <th>Instituição</th>
@@ -102,8 +102,8 @@ export default function Checkins() {
               {filtered.map((row) => (
                 <tr key={row.id}>
                   <td>{row.full_name}</td>
-                  <td>{row.phone || '-'}</td>
-                  <td>{row.email || '-'}</td>
+                  <td>{row.cim || '-'}</td>
+                  <td>{row.grau || '-'}</td>
                   <td>{row.city || '-'}</td>
                   <td><span className={row.is_guardioes ? 'tag gold' : 'tag'}>{row.is_guardioes ? 'Guardião' : 'Visitante'}</span></td>
                   <td>{row.is_guardioes ? '-' : row.other_institution}</td>

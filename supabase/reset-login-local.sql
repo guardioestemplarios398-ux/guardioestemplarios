@@ -38,6 +38,8 @@ create table if not exists public.checkins (
   id uuid primary key default gen_random_uuid(),
   event_id uuid references public.events(id) on delete cascade,
   full_name text not null,
+  cim text,
+  grau text,
   phone text,
   email text,
   city text,
@@ -46,6 +48,9 @@ create table if not exists public.checkins (
   notes text,
   created_at timestamptz not null default now()
 );
+
+alter table public.checkins add column if not exists cim text;
+alter table public.checkins add column if not exists grau text;
 
 create table if not exists public.app_admin_users (
   id uuid primary key default gen_random_uuid(),
@@ -81,10 +86,10 @@ insert into public.events (
   active
 )
 values (
-  'Check-in Diário do Templo',
+  'Check-in Guardiões Templários 33 N° 4637',
   'checkin-diario-templo',
-  'Controle diário de presença no templo dos Guardiões Templários.',
-  'Templo Guardiões Templários',
+  'Controle de presença da Loja Guardiões Templários 33 N° 4637.',
+  'Guardiões Templários 33 N° 4637',
   current_date,
   true
 )
@@ -362,6 +367,8 @@ returns table (
   event_name text,
   event_slug text,
   full_name text,
+  cim text,
+  grau text,
   phone text,
   email text,
   city text,
@@ -384,6 +391,8 @@ begin
     e.name as event_name,
     e.slug as event_slug,
     c.full_name,
+    c.cim,
+    c.grau,
     c.phone,
     c.email,
     c.city,
@@ -553,6 +562,8 @@ create index if not exists idx_events_slug on public.events(slug);
 create index if not exists idx_events_active on public.events(active);
 create index if not exists idx_checkins_event_id on public.checkins(event_id);
 create index if not exists idx_checkins_created_at on public.checkins(created_at desc);
+create index if not exists idx_checkins_cim on public.checkins(cim);
+create index if not exists idx_checkins_grau on public.checkins(grau);
 create index if not exists idx_app_admin_users_login_key on public.app_admin_users(login_key);
 create index if not exists idx_app_admin_sessions_token_hash on public.app_admin_sessions(token_hash);
 create index if not exists idx_app_admin_sessions_expires_at on public.app_admin_sessions(expires_at);

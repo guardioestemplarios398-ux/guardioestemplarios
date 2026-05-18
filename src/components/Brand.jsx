@@ -1,14 +1,12 @@
-import { ShieldCheck } from 'lucide-react';
-
 export default function Brand({ compact = false }) {
   return (
     <div className={`brand ${compact ? 'brand-compact' : ''}`}>
       <div className="brand-mark">
-        <ShieldCheck size={compact ? 24 : 32} />
+        <img src="/logo-guardioes-templarios.png" alt="Logo Guardiões Templários" />
       </div>
       <div>
-        <strong>Guardiões Templários Check-in</strong>
-        {!compact && <span>Controle de Presença e Acesso ao Templo</span>}
+        <strong>Guardiões Templários 33 N° 4637</strong>
+        {!compact && <span>Check-in e Controle de Presença da Loja</span>}
       </div>
     </div>
   );

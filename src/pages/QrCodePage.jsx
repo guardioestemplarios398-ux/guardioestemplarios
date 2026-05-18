@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Download, QrCode } from 'lucide-react';
+import { Download, ExternalLink, QrCode } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { supabase } from '../lib/supabase.js';
 
@@ -7,7 +7,7 @@ export default function QrCodePage() {
   const [events, setEvents] = useState([]);
   const [selectedSlug, setSelectedSlug] = useState('checkin-diario-templo');
   const qrRef = useRef(null);
-  const publicBase = import.meta.env.VITE_APP_PUBLIC_URL || window.location.origin;
+  const publicBase = window.location.origin.replace(/\/$/, '');
 
   useEffect(() => {
     async function loadEvents() {
@@ -57,11 +57,14 @@ export default function QrCodePage() {
           </label>
           <button className="primary-btn full" onClick={downloadQr}><Download size={18} /> Baixar QR Code PNG</button>
           <button className="ghost-btn full" onClick={() => navigator.clipboard.writeText(url)}>Copiar link</button>
+          <button className="ghost-btn full" onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}>
+            <ExternalLink size={18} /> Abrir link de teste
+          </button>
         </div>
 
         <div className="panel qr-preview">
           <div className="qr-card-print" ref={qrRef}>
-            <div className="qr-brand">Guardiões Templários Check-in</div>
+            <div className="qr-brand">Guardiões Templários 33 N° 4637</div>
             <QRCodeCanvas value={url} size={260} bgColor="#ffffff" fgColor="#111111" includeMargin />
             <strong>{selectedEvent?.name || 'Check-in'}</strong>
             <span>Escaneie para confirmar sua presença</span>

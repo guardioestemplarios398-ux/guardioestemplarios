@@ -86,14 +86,14 @@ export default function Events() {
     loadEvents();
   }
 
-  const publicBase = import.meta.env.VITE_APP_PUBLIC_URL || window.location.origin;
+  const publicBase = window.location.origin.replace(/\/$/, '');
 
   return (
     <div className="page-stack">
       <header className="page-header">
         <span>Eventos</span>
         <h1>Gerenciar eventos e QR Codes</h1>
-        <p>Crie eventos específicos ou mantenha o check-in diário do templo.</p>
+        <p>Crie eventos específicos ou mantenha o check-in da Loja.</p>
       </header>
 
       <section className="admin-split">
@@ -116,7 +116,7 @@ export default function Events() {
           <div className="form-grid">
             <label>
               Local
-              <input value={form.location} onChange={(e) => update('location', e.target.value)} placeholder="Templo" />
+              <input value={form.location} onChange={(e) => update('location', e.target.value)} placeholder="Guardiões Templários 33 N° 4637" />
             </label>
             <label>
               Data
