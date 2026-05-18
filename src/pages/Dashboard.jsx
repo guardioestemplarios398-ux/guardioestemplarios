@@ -19,7 +19,7 @@ export default function Dashboard() {
     async function load() {
       if (filter === 'custom' && (!customStart || !customEnd)) return;
       setLoading(true);
-      const { data, error } = await supabase.rpc('admin_list_checkins', {
+      const { data, error } = await supabase.rpc('admin_list_checkins_v2', {
         p_token: getAdminToken(),
         p_start: toSupabaseDate(range.start),
         p_end: toSupabaseDate(range.end),

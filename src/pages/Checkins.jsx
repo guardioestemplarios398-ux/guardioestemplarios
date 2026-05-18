@@ -36,7 +36,7 @@ export default function Checkins() {
     setLoading(true);
     setError('');
 
-    const { data, error } = await supabase.rpc('admin_list_checkins', {
+    const { data, error } = await supabase.rpc('admin_list_checkins_v2', {
       p_token: getAdminToken(),
       p_start: toSupabaseDate(range.start),
       p_end: toSupabaseDate(range.end),
@@ -98,7 +98,7 @@ export default function Checkins() {
     setMessage('');
     setError('');
 
-    const { error } = await supabase.rpc('admin_update_checkin', {
+    const { error } = await supabase.rpc('admin_update_checkin_v2', {
       p_token: getAdminToken(),
       p_checkin_id: editForm.id,
       p_full_name: editForm.full_name.trim(),
@@ -129,7 +129,7 @@ export default function Checkins() {
     setMessage('');
     setError('');
 
-    const { error } = await supabase.rpc('admin_delete_checkin', {
+    const { error } = await supabase.rpc('admin_delete_checkin_v2', {
       p_token: getAdminToken(),
       p_checkin_id: row.id,
     });

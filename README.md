@@ -382,3 +382,16 @@ admin_delete_checkin
 ```
 
 No painel, a aba **Check-ins** passa a ter botões de editar e excluir em cada linha.
+
+
+## Correção definitiva CIM/Grau + Editar/Excluir
+
+Execute no Supabase:
+
+```txt
+supabase/correcao-definitiva-cim-grau-editar-excluir.sql
+```
+
+Essa correção remove a ambiguidade da função de exclusão e recria funções `v2` para listar, editar e excluir check-ins.
+
+Depois faça novo deploy no Netlify.
