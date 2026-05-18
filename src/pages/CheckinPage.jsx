@@ -175,9 +175,9 @@ export default function CheckinPage() {
 
               {!form.is_guardioes && (
                 <label className="fade-in">
-                  Qual instituição, grupo ou templo você representa? <b>*</b>
+                  Nome da loja visitante? <b>*</b>
                   <input
-                    placeholder="Ex.: Visitante, grupo, igreja ou instituição"
+                    placeholder="Ex.:"
                     value={form.other_institution}
                     onChange={(e) => updateField('other_institution', e.target.value)}
                     required={!form.is_guardioes}
