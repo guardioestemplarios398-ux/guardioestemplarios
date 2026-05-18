@@ -145,12 +145,7 @@ export default function CheckinPage() {
               </div>
 
               <label>
-                Cidade
-                <input
-                  placeholder="Informe sua cidade"
-                  value={form.city}
-                  onChange={(e) => updateField('city', e.target.value)}
-                />
+               
               </label>
 
               <div className="choice-box">
@@ -177,7 +172,7 @@ export default function CheckinPage() {
                 <label className="fade-in">
                   Nome da loja visitante? <b>*</b>
                   <input
-                    placeholder="Ex.:"
+                    placeholder=":"
                     value={form.other_institution}
                     onChange={(e) => updateField('other_institution', e.target.value)}
                     required={!form.is_guardioes}
