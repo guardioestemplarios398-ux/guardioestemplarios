@@ -338,3 +338,47 @@ ou, para aplicar apenas as colunas novas:
 ```txt
 supabase/migracao-cim-grau-loja.sql
 ```
+
+
+## Ajuste de campo visitante
+
+O campo exibido quando a pessoa marca que **não** é dos Guardiões foi renomeado para:
+
+```txt
+Nome da loja visitante
+```
+
+A exportação CSV e a tabela administrativa também foram ajustadas para o mesmo nome.
+
+
+## Ajuste: remoção do campo cidade
+
+O campo `Cidade` foi removido de:
+
+```txt
+Formulário público
+Tabela administrativa
+Dashboard
+Busca
+Exportação CSV
+```
+
+A coluna `city` pode permanecer no banco apenas para compatibilidade com registros antigos.
+
+
+## Correção CIM/Grau + edição e exclusão manual
+
+Execute no Supabase:
+
+```txt
+supabase/correcao-editar-excluir-checkins.sql
+```
+
+Esse SQL recria a função `admin_list_checkins` para retornar `cim` e `grau`, e também cria:
+
+```txt
+admin_update_checkin
+admin_delete_checkin
+```
+
+No painel, a aba **Check-ins** passa a ter botões de editar e excluir em cada linha.

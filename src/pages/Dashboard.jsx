@@ -147,7 +147,6 @@ export default function Dashboard() {
                 <th>Tipo</th>
                 <th>CIM</th>
                 <th>Grau</th>
-                <th>Cidade</th>
                 <th>Evento</th>
                 <th>Data/Hora</th>
               </tr>
@@ -159,12 +158,11 @@ export default function Dashboard() {
                   <td><span className={row.is_guardioes ? 'tag gold' : 'tag'}>{row.is_guardioes ? 'Guardião' : 'Visitante'}</span></td>
                   <td>{row.cim || '-'}</td>
                   <td>{row.grau || '-'}</td>
-                  <td>{row.city || '-'}</td>
                   <td>{row.event_name || '-'}</td>
                   <td>{formatDateTime(row.created_at)}</td>
                 </tr>
               ))}
-              {!rows.length && <tr><td colSpan="7" className="empty-table">Nenhum check-in no período.</td></tr>}
+              {!rows.length && <tr><td colSpan="6" className="empty-table">Nenhum check-in no período.</td></tr>}
             </tbody>
           </table>
         </div>

@@ -9,7 +9,6 @@ const initialForm = {
   full_name: '',
   cim: '',
   grau: 'Aprendiz',
-  city: '',
   is_guardioes: true,
   other_institution: '',
   notes: '',
@@ -66,7 +65,6 @@ export default function CheckinPage() {
       full_name: form.full_name.trim(),
       cim: form.cim.trim() || null,
       grau: form.grau || null,
-      city: form.city.trim() || null,
       is_guardioes: Boolean(form.is_guardioes),
       other_institution: form.is_guardioes ? null : form.other_institution.trim(),
       notes: form.notes.trim() || null,
@@ -144,15 +142,6 @@ export default function CheckinPage() {
                 </label>
               </div>
 
-              <label>
-                Cidade
-                <input
-                  placeholder="Informe sua cidade"
-                  value={form.city}
-                  onChange={(e) => updateField('city', e.target.value)}
-                />
-              </label>
-
               <div className="choice-box">
                 <span>Você é dos Guardiões Templários?</span>
                 <div className="choice-actions">
@@ -175,9 +164,9 @@ export default function CheckinPage() {
 
               {!form.is_guardioes && (
                 <label className="fade-in">
-                  Qual instituição, grupo ou templo você representa? <b>*</b>
+                  Nome da loja visitante <b>*</b>
                   <input
-                    placeholder="Ex.: Visitante, grupo, igreja ou instituição"
+                    placeholder="Informe o nome da loja visitante"
                     value={form.other_institution}
                     onChange={(e) => updateField('other_institution', e.target.value)}
                     required={!form.is_guardioes}
