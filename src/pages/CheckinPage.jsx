@@ -172,7 +172,7 @@ export default function CheckinPage() {
                 <label className="fade-in">
                   Nome da loja visitante? <b>*</b>
                   <input
-                    placeholder=":"
+                    placeholder=""
                     value={form.other_institution}
                     onChange={(e) => updateField('other_institution', e.target.value)}
                     required={!form.is_guardioes}
