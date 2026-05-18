@@ -142,6 +142,13 @@ export default function CheckinPage() {
                 </label>
               </div>
 
+<<<<<<< HEAD
+=======
+              <label>
+               
+              </label>
+
+>>>>>>> d735f9b22ddbee1557a256b987c7d166b9ccf3a8
               <div className="choice-box">
                 <span>Você é dos Guardiões Templários?</span>
                 <div className="choice-actions">
@@ -164,9 +171,15 @@ export default function CheckinPage() {
 
               {!form.is_guardioes && (
                 <label className="fade-in">
+<<<<<<< HEAD
                   Nome da loja visitante <b>*</b>
                   <input
                     placeholder="Informe o nome da loja visitante"
+=======
+                  Nome da loja visitante? <b>*</b>
+                  <input
+                    placeholder=""
+>>>>>>> d735f9b22ddbee1557a256b987c7d166b9ccf3a8
                     value={form.other_institution}
                     onChange={(e) => updateField('other_institution', e.target.value)}
                     required={!form.is_guardioes}
